@@ -1,0 +1,6 @@
+{
+  "name": "shortical-episode-exercise", "version": "1.0.0", "private": true,
+  "scripts": {"start": "node app/server.mjs", "test": "playwright test", "test:ui": "playwright test --ui", "typecheck": "tsc --noEmit"},
+  "devDependencies": {"@playwright/test": "1.61.1", "@types/node": "22.19.15", "typescript": "5.9.3"},
+  "engines": {"node": ">=22"}
+}

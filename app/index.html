@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shortical local episode exercise</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 1rem; background: #10121a; color: #f6f7fb; }
+    button { padding: .8rem 1.2rem; margin: .4rem; font: inherit; cursor: pointer; }
+    button:disabled { cursor: default; opacity: .5; }
+    #player { background: #24293d; border-radius: 1rem; padding: 2rem; }
+    [role=status] { font-size: 1.4rem; }
+    small { color: #c3c8da; }
+  </style>
+</head>
+<body>
+  <h1>Shortical — local exercise</h1>
+  <p>This deterministic player simulates playback. It does not load or decode video.</p>
+  <main id="app">
+    <h2>Series catalog</h2>
+    <button id="open">Open Midnight Signals</button>
+  </main>
+  <script>
+    const episodes = ['Episode 1: The Signal', 'Episode 2: The Reply'];
+    const app = document.getElementById('app');
+    let episode = 0;
+    let playing = false;
+
+    function render() {
+      app.innerHTML = `
+        <h2>Midnight Signals</h2>
+        <section id="player" aria-label="Episode player">
+          <h3>${episodes[episode]}</h3>
+          <p role="status" aria-live="polite">${playing ? 'Playing' : 'Paused'}</p>
+          <button id="toggle">${playing ? 'Pause' : 'Play'}</button>
+          <button id="next" ${episode === episodes.length - 1 ? 'disabled' : ''}>Next episode</button>
+        </section>
+        <p><small>Next episode resets playback to Paused. A page reload returns to the catalog.</small></p>`;
+      document.getElementById('toggle').onclick = () => { playing = !playing; render(); };
+      document.getElementById('next').onclick = () => {
+        if (episode < episodes.length - 1) { episode += 1; playing = false; render(); }
+      };
+    }
+    document.getElementById('open').onclick = render;
+  </script>
+</body>
+</html>
