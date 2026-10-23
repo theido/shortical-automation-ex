@@ -1,0 +1,27 @@
+name: Candidate baseline
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run typecheck
+      - name: Run baseline tests
+        run: npm --silent test -- --reporter=json > baseline-results.json
+      - name: Confirm smoke passes and exercise remains skipped
+        run: node .github/scripts/check-baseline.mjs baseline-results.json
+      # No traces, reports or interview work uploaded as artifacts.

@@ -1,0 +1,16 @@
+node_modules/
+playwright-report/
+test-results/
+baseline-results.json
+.env*
+.DS_Store
+*.log
+*.zip
+*.mp4
+*.webm
+*.mov
+*.har
+*.trace
+recordings/
+transcripts/
+candidate-data/
