@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1280">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090713"/><stop offset=".55" stop-color="#2d1656"/><stop offset="1" stop-color="#ff2d78"/></linearGradient></defs>
+  <rect width="720" height="1280" fill="url(#g)"/>
+  <circle cx="530" cy="270" r="170" fill="#f6d8e8" opacity=".12"/>
+  <path d="M0 930 Q180 760 350 930 T720 900 V1280 H0Z" fill="#0b0714" opacity=".8"/>
+  <text x="54" y="1040" fill="#fff" font-family="Arial" font-size="42" font-weight="700">MIDNIGHT</text>
+  <text x="54" y="1094" fill="#ffb7d1" font-family="Arial" font-size="42" font-weight="700">SIGNALS</text>
+  <text x="56" y="1150" fill="#d7cfe0" font-family="Arial" font-size="18">Episode 01 · The Signal</text>
+</svg>
