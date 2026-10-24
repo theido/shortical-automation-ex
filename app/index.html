@@ -1,46 +1,142 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shortical local episode exercise</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shortical — local episode exercise</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 1rem; background: #10121a; color: #f6f7fb; }
-    button { padding: .8rem 1.2rem; margin: .4rem; font: inherit; cursor: pointer; }
-    button:disabled { cursor: default; opacity: .5; }
-    #player { background: #24293d; border-radius: 1rem; padding: 2rem; }
-    [role=status] { font-size: 1.4rem; }
-    small { color: #c3c8da; }
+    :root { --bg:#09090d; --surface:#14131a; --surface-2:#1d1a25; --text:#fbf8fc; --muted:#aaa3b4; --pink:#ff2d78; --pink-soft:#ff9bbd; --line:#2c2835; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 75% 0%, #28152a 0, transparent 35%), var(--bg); color:var(--text); font-family:Arial, Helvetica, sans-serif; min-height:100vh; }
+    button { font:inherit; }
+    .shell { width:min(1180px, calc(100% - 40px)); margin:0 auto; }
+    header { height:84px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.08); }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.03em; font-size:22px; }
+    .brand-mark { width:30px; height:30px; border-radius:10px; background:linear-gradient(135deg, #fff 0 22%, var(--pink) 22% 55%, #6b46ff 55%); box-shadow:0 0 24px rgba(255,45,120,.45); }
+    nav { display:flex; gap:26px; color:var(--muted); font-size:14px; }
+    nav span:first-child { color:var(--pink-soft); }
+    .header-action { border:1px solid var(--line); color:var(--text); background:transparent; border-radius:999px; padding:10px 16px; }
+    main { padding:26px 0 80px; }
+    .hero { position:relative; min-height:560px; border-radius:28px; overflow:hidden; background:#15121d; border:1px solid rgba(255,255,255,.08); display:grid; grid-template-columns:1.15fr .85fr; align-items:end; }
+    .hero::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, rgba(9,9,13,.98) 0%, rgba(9,9,13,.62) 45%, rgba(9,9,13,.05) 85%), linear-gradient(0deg, rgba(9,9,13,.82), transparent 55%); pointer-events:none; }
+    .hero-copy { position:relative; z-index:2; padding:54px; max-width:650px; }
+    .eyebrow { color:var(--pink-soft); font-size:12px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    h1 { font-size:clamp(52px, 8vw, 96px); line-height:.88; letter-spacing:-.075em; margin:18px 0 18px; max-width:560px; }
+    .hero-copy p { color:#d4ced9; font-size:18px; line-height:1.5; max-width:470px; margin:0 0 24px; }
+    .hero-actions { display:flex; gap:12px; align-items:center; }
+    .primary { background:var(--pink); color:#18040d; border:0; border-radius:999px; padding:14px 22px; font-weight:800; cursor:pointer; box-shadow:0 12px 30px rgba(255,45,120,.24); }
+    .secondary { background:rgba(255,255,255,.08); color:var(--text); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:13px 20px; cursor:pointer; }
+    .hero-media { position:absolute; inset:0; display:flex; justify-content:flex-end; align-items:center; padding-right:70px; }
+    .hero-scene { width:min(400px, 38vw); aspect-ratio:9/16; border-radius:26px; opacity:.92; box-shadow:0 30px 90px rgba(0,0,0,.5); transform:rotate(3deg); position:relative; overflow:hidden; background:linear-gradient(150deg,#301240,#ff2d78 55%,#101726); }
+    .hero-scene::before { content:""; position:absolute; inset:18% 12%; border:1px solid rgba(255,255,255,.35); border-radius:50%; box-shadow:0 0 70px rgba(255,45,120,.65); }
+    .hero-scene strong { position:absolute; left:22px; bottom:24px; font-size:12px; letter-spacing:.18em; color:#fff; }
+    .meta { display:flex; gap:16px; color:var(--muted); font-size:13px; margin-top:18px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; margin:54px 0 18px; }
+    h2 { margin:0; font-size:28px; letter-spacing:-.045em; }
+    .section-head span { color:var(--muted); font-size:13px; }
+    .row { display:grid; grid-template-columns:repeat(6, 1fr); gap:14px; }
+    .card { min-width:0; cursor:pointer; }
+    .poster { position:relative; aspect-ratio:9/14; overflow:hidden; border-radius:16px; background:var(--surface-2); border:1px solid rgba(255,255,255,.07); transition:transform .2s ease, border-color .2s ease; }
+    .card:hover .poster, .card:focus-within .poster { transform:translateY(-6px); border-color:rgba(255,45,120,.7); }
+    .poster img { width:100%; height:100%; object-fit:cover; display:block; }
+    .poster::after { content:""; position:absolute; inset:45% 0 0; background:linear-gradient(transparent, rgba(0,0,0,.76)); }
+    .poster-label { position:absolute; z-index:1; left:10px; bottom:10px; right:10px; font-size:13px; font-weight:700; line-height:1.15; }
+    .card-title { margin:10px 0 0; font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-meta { margin-top:6px; color:var(--muted); font-size:12px; }
+    .player { margin-top:56px; background:linear-gradient(135deg, #1b1420, #14121b); border:1px solid var(--line); border-radius:24px; padding:28px; display:grid; grid-template-columns:280px 1fr; gap:28px; align-items:center; }
+    .player-poster { width:100%; aspect-ratio:9/14; border-radius:16px; overflow:hidden; background:#27162c; }
+    .player-poster img { width:100%; height:100%; object-fit:cover; }
+    .player-copy h2 { font-size:36px; margin:0 0 8px; }
+    .episode-title { color:var(--pink-soft); font-size:18px; margin:0 0 20px; }
+    .mock-video { width:100%; height:260px; background:linear-gradient(145deg,#170d26,#37102d 55%,#0b1a2d); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:20px 0; position:relative; overflow:hidden; }
+    .mock-video::before { content:""; width:130px; height:130px; border:1px solid rgba(255,255,255,.28); border-radius:50%; box-shadow:0 0 80px rgba(255,45,120,.55); }
+    .mock-video-glow { position:absolute; width:90px; height:90px; border-radius:50%; background:rgba(255,45,120,.58); filter:blur(28px); }
+    .mock-video-label { position:absolute; bottom:16px; left:18px; color:#ffb4cc; font-size:11px; letter-spacing:.16em; font-weight:800; }
+    .status-line { display:flex; gap:12px; align-items:center; color:var(--muted); font-size:14px; }
+    .status-dot { width:9px; height:9px; border-radius:50%; background:var(--pink); box-shadow:0 0 12px var(--pink); }
+    .player-actions { display:flex; gap:10px; margin-top:18px; }
+    .player-actions button { border:1px solid var(--line); background:var(--surface-2); color:var(--text); border-radius:999px; padding:11px 16px; cursor:pointer; }
+    .player-actions button:disabled { opacity:.45; cursor:default; }
+    [role=status] { color:var(--text); font-weight:700; }
+    .note { color:var(--muted); font-size:13px; margin-top:18px; }
+    :focus-visible { outline:3px solid var(--pink-soft); outline-offset:3px; }
+    @media (max-width: 900px) { nav { display:none; } .hero { grid-template-columns:1fr; min-height:640px; } .hero-media { opacity:.45; padding-right:12%; } .hero-copy { padding:34px; } .row { grid-template-columns:repeat(3, 1fr); } .player { grid-template-columns:1fr; } .player-poster { width:180px; } }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto!important; transition:none!important; } }
   </style>
 </head>
 <body>
-  <h1>Shortical — local exercise</h1>
-  <p>This deterministic player simulates playback. It does not load or decode video.</p>
-  <main id="app">
-    <h2>Series catalog</h2>
-    <button id="open">Open Midnight Signals</button>
-  </main>
+  <div class="shell">
+    <header>
+      <div class="brand"><div class="brand-mark" aria-hidden="true"></div><span>Shortical</span></div>
+      <nav aria-label="Primary navigation"><span>Home</span><span>Browse</span><span>Genres</span><span>Continue watching</span></nav>
+      <button class="header-action" type="button">Sign in</button>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true"><div class="hero-scene hero-scene-one"><span class="scene-glow"></span><strong>EPISODE 01</strong></div></div>
+        <div class="hero-copy">
+          <div class="eyebrow">A Shortical original</div>
+          <h1 id="hero-title">Midnight Signals</h1>
+          <p>A late-night message opens a door that should have stayed closed. Two episodes are waiting.</p>
+          <div class="hero-actions"><button class="primary" id="open" type="button">Play episode 1</button><button class="secondary" type="button">＋ My list</button></div>
+          <div class="meta"><span>Drama</span><span>2 episodes</span><span>12 min total</span></div>
+        </div>
+      </section>
+      <section aria-labelledby="recommended-title">
+        <div class="section-head"><h2 id="recommended-title">Top recommended</h2><span>Short stories, big turns</span></div>
+        <div class="row">
+          <article class="card"><div class="poster"><img src="/assets/midnight-signals.svg" alt="Midnight Signals poster"><div class="poster-label">Midnight Signals</div></div><div class="card-title">Midnight Signals</div><div class="card-meta">Drama · 2 episodes</div></article>
+          <article class="card"><div class="poster"><img src="/assets/episode-two.svg" alt="The Reply poster"><div class="poster-label">The Reply</div></div><div class="card-title">The Reply</div><div class="card-meta">Mystery · 6 episodes</div></article>
+          <article class="card"><div class="poster"><img src="/assets/midnight-signals.svg" alt="After the Last Train poster"><div class="poster-label">After the Last Train</div></div><div class="card-title">After the Last Train</div><div class="card-meta">Romance · 8 episodes</div></article>
+          <article class="card"><div class="poster"><img src="/assets/episode-two.svg" alt="Borrowed Time poster"><div class="poster-label">Borrowed Time</div></div><div class="card-title">Borrowed Time</div><div class="card-meta">Thriller · 5 episodes</div></article>
+          <article class="card"><div class="poster"><img src="/assets/midnight-signals.svg" alt="The Quiet Room poster"><div class="poster-label">The Quiet Room</div></div><div class="card-title">The Quiet Room</div><div class="card-meta">Drama · 7 episodes</div></article>
+          <article class="card"><div class="poster"><img src="/assets/episode-two.svg" alt="Second Signal poster"><div class="poster-label">Second Signal</div></div><div class="card-title">Second Signal</div><div class="card-meta">Mystery · 4 episodes</div></article>
+        </div>
+      </section>
+      <section id="viewer" class="player" aria-label="Episode player" hidden>
+        <div class="player-poster"><img id="poster" src="/assets/midnight-signals.svg" alt="Current episode poster"></div>
+        <div class="player-copy">
+          <div class="eyebrow">Now playing</div>
+          <h2>Midnight Signals</h2>
+          <p id="episode-heading" class="episode-title">Episode 1: The Signal</p>
+          <div id="video" class="mock-video" aria-label="Mock video player"><span class="mock-video-glow"></span><span class="mock-video-label">LOCAL PREVIEW</span></div>
+          <div class="status-line"><span class="status-dot" aria-hidden="true"></span><span role="status" aria-live="polite">Paused</span><span>· local video simulator</span></div>
+          <div class="player-actions"><button id="toggle" type="button">Play</button><button id="next" type="button">Next episode</button></div>
+          <p class="note">The interview fixture uses deterministic local state. It does not test codecs, DRM, purchases, or native mobile playback.</p>
+        </div>
+      </section>
+    </main>
+  </div>
   <script>
-    const episodes = ['Episode 1: The Signal', 'Episode 2: The Reply'];
-    const app = document.getElementById('app');
-    let episode = 0;
-    let playing = false;
+    const episodes = [
+      { title: 'Episode 1: The Signal', poster: '/assets/midnight-signals.svg' },
+      { title: 'Episode 2: The Reply', poster: '/assets/episode-two.svg' }
+    ];
+    const app = { index: 0, playing: false };
+    const viewer = document.getElementById('viewer');
+    const heading = document.getElementById('episode-heading');
+    const status = viewer.querySelector('[role=status]');
+    const toggle = document.getElementById('toggle');
+    const next = document.getElementById('next');
+    const poster = document.getElementById('poster');
+
+    function updateControls() {
+      status.textContent = app.playing ? 'Playing' : 'Paused';
+      toggle.textContent = app.playing ? 'Pause' : 'Play';
+      next.disabled = app.index === episodes.length - 1;
+    }
 
     function render() {
-      app.innerHTML = `
-        <h2>Midnight Signals</h2>
-        <section id="player" aria-label="Episode player">
-          <h3>${episodes[episode]}</h3>
-          <p role="status" aria-live="polite">${playing ? 'Playing' : 'Paused'}</p>
-          <button id="toggle">${playing ? 'Pause' : 'Play'}</button>
-          <button id="next" ${episode === episodes.length - 1 ? 'disabled' : ''}>Next episode</button>
-        </section>
-        <p><small>Next episode resets playback to Paused. A page reload returns to the catalog.</small></p>`;
-      document.getElementById('toggle').onclick = () => { playing = !playing; render(); };
-      document.getElementById('next').onclick = () => {
-        if (episode < episodes.length - 1) { episode += 1; playing = false; render(); }
-      };
+      const current = episodes[app.index];
+      viewer.hidden = false;
+      heading.textContent = current.title;
+      poster.src = current.poster;
+      updateControls();
+      viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    document.getElementById('open').onclick = render;
+    document.getElementById('open').onclick = () => { app.index = 0; app.playing = false; render(); };
+    toggle.onclick = () => { app.playing = !app.playing; updateControls(); };
+    next.onclick = () => { if (app.index < episodes.length - 1) { app.index += 1; app.playing = false; render(); } };
   </script>
 </body>
 </html>
