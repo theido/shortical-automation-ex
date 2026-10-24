@@ -1,6 +1,6 @@
 # Shortical Automation Interview Exercise
 
-A ready-to-run Playwright + TypeScript starter for an approximately **18-minute live technical interview**. You will write a focused end-to-end test for a fictional episode-viewing journey. Read [EXERCISE.md](EXERCISE.md) for the task.
+A ready-to-run, Shortical-inspired Playwright + TypeScript starter for an approximately **18-minute live technical interview**. You will write a focused end-to-end test for a fictional episode-viewing journey. Read [EXERCISE.md](EXERCISE.md) for the task.
 
 **Complete environment setup before the interview, but do not solve or unskip the exercise in advance.** Leave `tests/episode-playback.spec.ts` unchanged until the interviewer starts the task. The initial smoke check is only an environment check, not a completed exercise.
 
